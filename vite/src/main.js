@@ -9,15 +9,15 @@
 // 
 // 所以 我们重新拼写路径 类似 '/@module/vue' 以 / 开头
 import { createApp , h} from 'vue'
-const app = {
-      render(){
-          return h(
-            "div",null,[
-              h("div",null,String('hellw vite '))
-            ]
-          )
-      }
-}
+import  App  from './App.vue'
+// const app = {
+//       render(){
+//           return h(
+//             "div",null,[
+//               h("div",null,String('hellw vite '))
+//             ]
+//           )
+//       }
+// }
 
-
-createApp(app).mount('#app')
+createApp(App).mount('#app')

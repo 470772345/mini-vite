@@ -2,6 +2,8 @@ const Koa = require("Koa")
 const fs = require("fs")
 const path = require("path")
 const app = new Koa()
+const compilerSfc = require('@vue/compiler-sfc')
+const compilerDom = require('@vue/compiler-dom')
 // vite 起一个静态文件服务器
 // 控制台查看,esmodule方式每次请求 都会有一个请求
 // 参考 https://www.bilibili.com/video/BV1Df4y1n777?p=2&spm_id_from=pageDriver
@@ -73,6 +75,37 @@ app.use(async (ctx)=> {
     ctx.body =  ret
     // (process.env.NODE_ENV !== 'production') 报错,因为没有process
     // process 
+  }
+  // sfc vue 组件. 单文件组件
+  else if( url.indexOf('.vue')>-1){
+     // *.vue?type=template
+     let vueP  = url.split('?')[0].slice(1)
+     console.log('vueP',vueP)
+     const p = path.resolve(__dirname,vueP)
+     const { descriptor } = compilerSfc.parse(fs.readFileSync(p,'utf-8'))
+     // // 第一步 vue文件 => template script [cimpiler-sfc]
+     if(!query.type){
+      ctx.type = 'application/javascript'
+      // 使用vue自导入的compile 插件, 解析vue单文件组件,相当于 vue-loader 做的事情
+      ctx.body = `
+         ${ rewriteImport(
+          descriptor.script.content.replace("export default",'const __script =')
+         )}
+         import { render as __render } from "${url}?type=template"
+         __script.render = __render
+         export default __script
+      `
+     }else{  // 处理 app.vue?type=templat
+       // 第二步  template模块 => renader函数 [complier-dom]
+        const template = descriptor.template
+        const render = compilerDom.compile(
+          template.content ,
+          { mode:'module' }
+        )
+        ctx.type = 'application/javascript'
+        ctx.body =  rewriteImport(render.code) 
+     }
+     
   }
 
   function rewriteImport(content){
