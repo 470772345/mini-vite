@@ -107,6 +107,25 @@ app.use(async (ctx)=> {
      }
      
   }
+  // 支持css文件
+  else if ( url.endsWith('.css')){
+    const p = path.resolve(__dirname,url.slice(1))
+    const file = fs.readFileSync(p,'utf-8')
+    // css 转换为js代码
+    // 利用js 添加style标签
+    const content = `
+      const css = "${file.replace(/\n/g,"")}"
+      let link = document.createElement('style')
+      link.setAttribute('type','text/css')
+      document.head.appendChild(link)
+      link.innerHTML = css
+      export default css
+    `
+    ctx.type = 'application/javascript'
+    ctx.body = content
+
+  }
+  //  支持jsx ,ts 等等....
 
   function rewriteImport(content){
       return content.replace(/ from ['|"]([^'"]+)['|"]/g ,function($0,$1){

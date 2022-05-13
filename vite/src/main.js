@@ -10,6 +10,7 @@
 // 所以 我们重新拼写路径 类似 '/@module/vue' 以 / 开头
 import { createApp , h} from 'vue'
 import  App  from './App.vue'
+import  a  from './index.css'
 // const app = {
 //       render(){
 //           return h(
