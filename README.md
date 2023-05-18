@@ -12,7 +12,8 @@ mini-vite
 
 
 1.vite 用的esmodule 模块方式, 其开了一个文件服务器.每个<scrpit type='module'>加载都会发起一个请求.
-  而webpack 是从入口就开始分析每个文件的模块依赖,生成依赖图.然后在自运行模块模拟加载require, eval执行文件.(在 Commonjs 规范下模块中，会形成一个包装函数，我们写的代码将作为包装函数的执行上下文，使用的 require ，exports ，module 本质上是通过形参的方式传递到包装函数中的。)
+  而webpack 是从入口就开始分析每个文件的模块依赖,生成依赖图.然后在自运行模块模拟加载require, eval执行文件.(在 Commonjs 规范下模块中，
+  会形成一个包装函数，我们写的代码将作为包装函数的执行上下文，使用的 require ，exports ，module 本质上是通过形参的方式传递到包装函数中的。)
 2. commjs imports 导出是值的拷贝,而 esmodule 的expot 导出的是 值的引用 ,不能修改improt 导入的属性
 3. 
 4. 借助 Es Module 的静态导入导出的优势，实现了 tree shaking
